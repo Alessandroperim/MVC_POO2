@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Professor {
+  idProfessor      Int       @id @map("idProfessor")
+  nomeProfessor    String
+  //avaliarProjeto   Avaliacao[]
+}
+
+model Aluno {
+  idAluno   Int      @id @map("idAluno")
+  nomeAluno String
+  matricula String
+  idEquipe  Int      @map("idEquipe")
+  Equipe    Equipe   @relation(fields: [idEquipe], references: [idEquipe])
+}
+
+
+model Equipe {
+  idEquipe     Int      @id @map("idEquipe")
+  Alunos       Aluno[]
+  Projeto      Projeto[]
+}
+
+model Avaliacao {
+  idAvaliacao        Int       @id @map("idAvaliacao")
+  avaliacaoAluno     Int
+  avaliacaoProfessor Int
+  projetoAvaliado    Projeto   @relation(fields: [projetoAvaliadoId], references: [idProjeto])
+  projetoAvaliadoId  Int
+}
+
+model Projeto {
+  idProjeto           Int      @id @map("idProjeto")
+  nomeProjeto         String
+  descricao           String
+  idEstande           Int      @map("idEstande")
+  avaliacaoProfessor  Int
+  avaliacaoAluno      Int
+  idEquipe            Int      @map("idEquipe")
+  Estande             Estande?  @relation(fields: [idEstande], references: [idEstande])
+  Equipe              Equipe   @relation(fields: [idEquipe], references: [idEquipe])
+  avaliacoes          Avaliacao[]
+}
+
+model Estande {
+  idEstande  Int       @id @map("idEstande")
+  Projeto    Projeto[]
+}
+
+// CriterioAvaliacao não tem relação
